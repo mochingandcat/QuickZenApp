@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema para aplicaciones Compose -->
+    <style name="Theme.QuickZenApp" parent="android:Theme.Material.Light.NoActionBar" />
+    
+    <!-- Tema para actividades AppCompat tradicionales -->
+    <style name="Theme.QuickZenApp.AppCompat" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#2196F3</item>
+        <item name="colorPrimaryDark">#1976D2</item>
+        <item name="colorAccent">#03A9F4</item>
+    </style>
+    
+    <!-- Tema para actividades que usan Material Components -->
+    <style name="Theme.QuickZenApp.Material" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#2196F3</item>
+        <item name="colorPrimaryDark">#1976D2</item>
+        <item name="colorAccent">#03A9F4</item>
+        <item name="colorSecondary">#03A9F4</item>
+    </style>
+</resources>

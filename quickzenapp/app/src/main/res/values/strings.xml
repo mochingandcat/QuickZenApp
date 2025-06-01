@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">QuickZen</string>
+
+
+
+
+    <string name="btnLoginGoogle">Login Google</string>
+
+
+
+    <!-- Otras cadenas de texto -->
+
+    <!-- El ID de cliente web se puede configurar directamente aquí o mediante placeholders 
+         que Google Services plugin reemplazará automáticamente -->
+    <string name="default_web_client_id" translatable="false">819659087727-nfqcb9gun4n6b7rvuaotq0le30mub6ku.apps.googleusercontent.com</string>
+
+    <!-- Clave API para Google Sign-In -->
+    <string name="google_api_key" translatable="false">AIzaSyBQ7Vzr5IasdfXRJwJHcLxgTK_GKQSEfH8</string>
+
+    <!-- Configuración para deshabilitar Facebook SDK -->
+    <string name="facebook_application_id" translatable="false">disabled</string>
+    <string name="facebook_client_token" translatable="false">disabled</string>
+    <string name="fb_login_protocol_scheme" translatable="false">disabled</string>
+</resources>

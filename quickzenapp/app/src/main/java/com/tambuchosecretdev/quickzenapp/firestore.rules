@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permitir que todos puedan leer y escribir durante el desarrollo
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

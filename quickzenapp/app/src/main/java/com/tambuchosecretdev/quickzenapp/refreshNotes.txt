@@ -1,0 +1,10 @@
+Para solucionar el error de compilación, sigue estas instrucciones exactas:
+
+1. En Android Studio, abre el archivo NotesViewModel.kt
+2. Ve a la línea 209 donde comienza la segunda implementación de refreshNotes()
+3. Elimina todo el segundo método refreshNotes(), desde:
+   private fun refreshNotes() {
+   hasta su último corchete de cierre }
+4. Guarda el archivo (Ctrl+S)
+
+Importante: Mantén SOLO la primera implementación del método (la de la línea 135)

@@ -1,0 +1,81 @@
+/**
+ * Actualiza una nota existente optimizando la sincronización con Firebase
+ * para evitar duplicados
+ */
+fun updateNote(
+    id: Long,
+    title: String,
+    content: String,
+    categoryId: Long?,
+    reminder: Long? = null,
+    colorId: String = NoteAppColors.DEFAULT_COLOR_ID,
+    isFavorite: Boolean = false,
+    isLocked: Boolean = false,
+    images: List<String> = emptyList()
+) {
+    if (title.isEmpty() && content.isEmpty()) {
+        _error.value = "La nota está vacía"
+        return
+    }
+
+    viewModelScope.launch {
+        try {
+            _isLoading.value = true
+
+            // Obtener la nota actual para preservar otros campos
+            val currentNote = repository.getNoteById(id)
+            if (currentNote == null) {
+                _error.value = "No se encontró la nota para actualizar"
+                return@launch
+            }
+
+            // Actualizar todos los campos proporcionados
+            val updatedNote = currentNote.copy(
+                title = title,
+                content = content,
+                modifiedDate = System.currentTimeMillis(),
+                categoryId = categoryId,
+                reminderDateTime = reminder,
+                colorId = colorId,
+                isFavorite = isFavorite,
+                isLocked = isLocked,
+                images = images,
+                needsSync = true  // Marcar como pendiente de sincronización
+            )
+
+            repository.updateNote(updatedNote)
+            Log.d("NotesViewModel", "Nota actualizada localmente: id=$id, cloudId=${updatedNote.cloudId}")
+
+            // Si el usuario está conectado, sincronizar esta nota inmediatamente
+            if (isUserSignedIn() && firebaseManager.isConnected()) {
+                try {
+                    // Usar saveNote para guardar/actualizar la nota en Firebase
+                    // Esto manejará correctamente si es una actualización o una creación
+                    val cloudId = firebaseManager.saveNote(updatedNote)
+                    
+                    if (cloudId != null) {
+                        // Actualizar el cloudId y marcar como sincronizada (needsSync = false)
+                        repository.updateNoteAfterSync(id, cloudId)
+                        Log.d("NotesViewModel", "Nota sincronizada exitosamente: id=$id, cloudId=$cloudId")
+                    } else {
+                        Log.w("NotesViewModel", "No se pudo obtener cloudId al sincronizar nota: $id")
+                        // No cambiamos el estado needsSync para que se intente sincronizar más tarde
+                    }
+                } catch (e: Exception) {
+                    Log.e("NotesViewModel", "Error al sincronizar nota actualizada: ${e.message}", e)
+                    // No reportamos el error al usuario para no interrumpir el flujo
+                }
+            } else {
+                Log.d("NotesViewModel", "Usuario no conectado o sin internet. La nota se sincronizará más tarde.")
+            }
+
+            _operationMessage.value = "Nota actualizada correctamente"
+            refreshNotes()
+        } catch (e: Exception) {
+            _error.value = "Error al actualizar la nota: ${e.message}"
+            Log.e("NotesViewModel", "Error al actualizar nota", e)
+        } finally {
+            _isLoading.value = false
+        }
+    }
+}
